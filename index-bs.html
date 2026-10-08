@@ -67,7 +67,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
               </div>
               <div class="modal-body">
-                Czy naprawdę chcesz posprzątać zupełnie?
+                Czy naprawdę chcesz wyczyścić treść notatek?
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nie</button>
@@ -85,7 +85,23 @@
   </div>
   <script>
   function kasowanie() {
-    alert("Funkcja kasowanie() została uruchomiona!");
+    alert("Funkcja kasowanie() zadziałała!\nSprawdź komunikaty w konsoli");
+    const newContent = "";
+    fetch(`http://localhost/api1/api.php?id=1`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ content: newContent })
+          })
+          .then(res => res.json())
+          .then(resp => {
+            console.log("Zapisano:", resp);
+            console.log("Okienko się nie zamknęło, a powinno");
+            console.log("Zawartość textarea1 nie została wyczyszczona");
+          })
+          .catch(err => console.error("Błąd zapisu:", err));
+    
     
   }
   // 1. Pobierz notatki z API
