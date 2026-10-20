@@ -58,14 +58,20 @@ switch ($method) {
             echo json_encode(["error" => "Missing id or content"]);
             exit;
         }
-        $notename = $input["notename"] ?? "";
-        $stmt = $pdo->prepare("UPDATE notes SET notename = ?, content = ? WHERE id = ?");
-        $stmt->execute([$notename, $input["content"], $id]);
-        echo json_encode([
-            "id" => $id,
-            "notename" => $notename,
-            "content" => $input["content"]
-        ]);
+
+        if (isset($input["notename"])) {
+            $stmt = $pdo->prepare(
+                "UPDATE notes SET notename = ?, content = ? WHERE id = ?"
+            );
+            $stmt->execute([$input["notename"], $input["content"], $id]);
+        } else {
+            $stmt = $pdo->prepare(
+                "UPDATE notes SET content = ? WHERE id = ?"
+            );
+            $stmt->execute([$input["content"], $id]);
+        }
+
+        echo json_encode(["status" => "updated", "id" => $id]);
         break;
 
     case "DELETE":
