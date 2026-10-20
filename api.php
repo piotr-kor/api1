@@ -41,9 +41,14 @@ switch ($method) {
             echo json_encode(["error" => "Missing content"]);
             exit;
         }
-        $stmt = $pdo->prepare("INSERT INTO notes (content) VALUES (?)");
-        $stmt->execute([$input["content"]]);
-        echo json_encode(["id" => $pdo->lastInsertId(), "content" => $input["content"]]);
+        $notename = $input["notename"] ?? "";
+        $stmt = $pdo->prepare("INSERT INTO notes (notename, content) VALUES (?, ?)");
+        $stmt->execute([$notename, $input["content"]]);
+        echo json_encode([
+            "id" => $pdo->lastInsertId(),
+            "notename" => $notename,
+            "content" => $input["content"]
+        ]);
         break;
 
     case "PUT":
@@ -53,9 +58,14 @@ switch ($method) {
             echo json_encode(["error" => "Missing id or content"]);
             exit;
         }
-        $stmt = $pdo->prepare("UPDATE notes SET content = ? WHERE id = ?");
-        $stmt->execute([$input["content"], $id]);
-        echo json_encode(["id" => $id, "content" => $input["content"]]);
+        $notename = $input["notename"] ?? "";
+        $stmt = $pdo->prepare("UPDATE notes SET notename = ?, content = ? WHERE id = ?");
+        $stmt->execute([$notename, $input["content"], $id]);
+        echo json_encode([
+            "id" => $id,
+            "notename" => $notename,
+            "content" => $input["content"]
+        ]);
         break;
 
     case "DELETE":
